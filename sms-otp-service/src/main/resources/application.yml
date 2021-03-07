@@ -1,0 +1,22 @@
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/login
+        username: root
+        password:
+
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+
+app:
+  sms:
+    apiKey: KC5bi9XhFUf72NYyPeGdHr6SjR8VLutmpgvaOxkoc1Ew4nlI3TmWqfcv9YKARSQpwINaVgxj0MFusOiB
+    senderId: FSTSMS
+    smsTemplate: Your OTP for signing in is ABC
+
