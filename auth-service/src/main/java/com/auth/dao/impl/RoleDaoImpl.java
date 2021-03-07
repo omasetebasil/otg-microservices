@@ -16,7 +16,7 @@ import com.auth.model.Roles;
 import com.auth.model.User;
 
 /**
- * @author kunal.lawand
+ * @author basil.omasete
  *
  */
 @Service

@@ -18,7 +18,7 @@ import com.auth.model.User;
 import com.auth.service.UserService;
 
 /**
- * @author kunal.lawand
+ * @author basil.omasete
  *
  */
 @RestController

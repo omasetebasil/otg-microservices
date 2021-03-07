@@ -4,7 +4,7 @@
 package com.auth.model;
 
 /**
- * @author kunal.lawand
+ * @author basil.omasete
  *
  */
 public enum GENDER {

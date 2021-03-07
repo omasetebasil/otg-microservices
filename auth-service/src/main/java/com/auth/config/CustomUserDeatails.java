@@ -13,7 +13,7 @@ import com.auth.dao.UserDao;
 import com.auth.model.User;
 
 /**
- * @author kunal.lawand
+ * @author basil.omasete
  *
  */
 @Service

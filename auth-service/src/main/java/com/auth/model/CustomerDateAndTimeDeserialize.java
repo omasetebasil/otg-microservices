@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 /**
- * @author kunal.lawand
+ * @author basil.omasete
  *
  */
 
