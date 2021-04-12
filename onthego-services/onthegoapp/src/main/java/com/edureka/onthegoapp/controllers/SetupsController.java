@@ -6,31 +6,13 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.edureka.onthegoapp.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.edureka.onthegoapp.exception.ResourceNotFoundException;
-import com.edureka.onthegoapp.models.Country;
-import com.edureka.onthegoapp.models.Currency;
-import com.edureka.onthegoapp.models.CurrencyRate;
-import com.edureka.onthegoapp.models.CustomerPaymentMode;
-import com.edureka.onthegoapp.models.Driver;
-import com.edureka.onthegoapp.models.DriverVehicle;
-import com.edureka.onthegoapp.models.Location;
-import com.edureka.onthegoapp.models.MapGrid;
-import com.edureka.onthegoapp.models.Payment;
-import com.edureka.onthegoapp.models.PaymentMode;
-import com.edureka.onthegoapp.models.Rider;
-import com.edureka.onthegoapp.models.Vehicle;
-import com.edureka.onthegoapp.models.VehicleCategory;
 import com.edureka.onthegoapp.services.SetupsService;
 
 
@@ -155,7 +137,8 @@ public class SetupsController {
     ///////////////////////////////////////////////////////////
    	@GetMapping("/drivers")
    	public List<Driver> getAllDrivers(){
-   		return setupsService.getAllDrivers();
+
+        return setupsService.getAllDrivers();
    	}
        @GetMapping("/drivers/{id}")
        public ResponseEntity<Driver> getDriverById(@PathVariable(value = "id") Long id)
@@ -164,10 +147,30 @@ public class SetupsController {
              .orElseThrow(() -> new ResourceNotFoundException("driver not found for this id :: " + id));
            return ResponseEntity.ok().body(driver);
        }
+    @GetMapping("/driverstatus/{status}")
+    public ResponseEntity<Driver> getDriverByStatus(@PathVariable(value = "status") String status)
+            throws ResourceNotFoundException {
+        Driver driver =setupsService.getDriverByStatus(status)
+                .orElseThrow(() -> new ResourceNotFoundException("driver not found for this status :: " + status));
+        return ResponseEntity.ok().body(driver);
+    }
+    @GetMapping("/driverbyidnoormobileno/{idmobNo}")
+    public ResponseEntity<Driver> getDriverByIdNoOrMobileNo(@PathVariable(value = "idmobNo") String idmobNo)
+            throws ResourceNotFoundException {
+        Driver driver =setupsService.getDriverByIdNoOrMobileNo(idmobNo)
+                .orElseThrow(() -> new ResourceNotFoundException("driver not found for this id/mobile no :: " + idmobNo));
+        return ResponseEntity.ok().body(driver);
+    }
        @PostMapping("/drivers")
        public Driver createDriver(@RequestBody Driver driver) {
-           return setupsService.createDriver(driver);
+
+        return setupsService.createDriver(driver);
        }
+    @PutMapping("/updatedrivers")
+    public Driver updateDriver(@RequestBody Driver driver) {
+
+        return setupsService.createDriver(driver);
+    }
        @DeleteMapping("/drivers/{id}")
        public Map<String, Boolean> deleteDriver(@PathVariable(value = "id") Long id)
          throws ResourceNotFoundException {
@@ -245,10 +248,21 @@ public class SetupsController {
                     .orElseThrow(() -> new ResourceNotFoundException("rider's record not found for this id :: " + id));
                   return ResponseEntity.ok().body(rider);
               }
+                @GetMapping("/riderbyidnoormobileno/{idmobNo}")
+                public ResponseEntity<Rider> getRiderByByIdNoOrMobileNo(@PathVariable(value = "idmobNo") String idmobNo)
+                        throws ResourceNotFoundException {
+                    Rider rider =setupsService.getRiderByIdNoOrMobileNo(idmobNo)
+                            .orElseThrow(() -> new ResourceNotFoundException("rider's record not found for this id/mobile number :: " + idmobNo));
+                    return ResponseEntity.ok().body(rider);
+                }
               @PostMapping("/riders")
               public Rider createRider(@Valid @RequestBody Rider rider) {
                   return setupsService.createRider(rider);
               }
+            @PutMapping("/updateriders")
+            public Rider updateRider(@Valid @RequestBody Rider rider) {
+                return setupsService.createRider(rider);
+            }
               @DeleteMapping("/riders/{id}")
               public Map<String, Boolean> deleteRider(@PathVariable(value = "id") Long id)
                 throws ResourceNotFoundException {
@@ -290,7 +304,7 @@ public class SetupsController {
                 ///////////////////////////////////////////////////////////
               	@GetMapping("/payments")
               	public List<Payment> getAllPayments(){
-              		return setupsService.getAllPayments();
+                      return setupsService.getAllPayments();
               	}
                   @GetMapping("/payments/{id}")
                   public ResponseEntity<Payment> getPaymentById(@PathVariable(value = "id") Long id)
@@ -299,9 +313,9 @@ public class SetupsController {
                         .orElseThrow(() -> new ResourceNotFoundException("payment record not found for this id :: " + id));
                       return ResponseEntity.ok().body(payment);
                   }
-                  @PostMapping("/payments")
-                  public Payment createPayment(@Valid @RequestBody Payment payment) {
-                      return setupsService.createPayment(payment);
+                  @PostMapping("/generatepaymententry")
+                  public PaymentResponse createPayment(@Valid @RequestBody PaymentRequest payment) {
+                      return setupsService.createPaymentRecord(payment);
                   }
                   @DeleteMapping("/payments/{id}")
                   public Map<String, Boolean> deletePayment(@PathVariable(value = "id") Long id)
@@ -314,6 +328,11 @@ public class SetupsController {
                       response.put("deleted", Boolean.TRUE);
                       return response;
                   }
+                @GetMapping("/riderpayments/{riderid}")
+                public List<Payment> getPaymentsByRiderId(@PathVariable(value = "riderid") Long riderid)
+                         {
+                    return setupsService.getPaymentsByRiderId(riderid);
+                }
                   ///////////////////////////////////////////////////////////
                 	@GetMapping("/mapgrids")
                 	public List<MapGrid> getAllMapGrids(){
@@ -395,4 +414,95 @@ public class SetupsController {
                             response.put("deleted", Boolean.TRUE);
                             return response;
                         }
+    ///////////////////////////////////////////////////////////
+    @GetMapping("/trips")
+    public List<Trip> getAllTrips(){
+        return setupsService.getAllTrips();
+    }
+    @GetMapping("/trips/{id}")
+    public ResponseEntity<Trip> getTripById(@PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+        Trip trip =setupsService.getTripById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("trip not found for this id :: " + id));
+        return ResponseEntity.ok().body(trip);
+    }
+    @PutMapping("/updatetrips")
+    public Trip updateTrip(@RequestBody Trip trip) {
+
+        return setupsService.createTrip(trip);
+    }
+    @PostMapping("/trips")
+    public Trip createTrip(@RequestBody Trip trip) {
+
+        return setupsService.createTrip(trip);
+    }
+    @DeleteMapping("/trips/{id}")
+    public Map<String, Boolean> deleteTrip(@PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+        Trip trip = setupsService.getTripById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found for this id :: " + id));
+
+        setupsService.deleteTrip(id);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return response;
+    }
+    @GetMapping("/drivertrips/{id}")
+    public ResponseEntity<Trip> getTripByDrivId(@PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+        Trip trip =setupsService.getTripByDrivId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("trip not found for this id :: " + id));
+        return ResponseEntity.ok().body(trip);
+    }
+    @GetMapping("/ridertrips/{id}")
+    public ResponseEntity<Trip> getTripByRidId(@PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+        Trip trip =setupsService.getTripByRidId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("trip not found for this id :: " + id));
+        return ResponseEntity.ok().body(trip);
+    }
+    @PutMapping("/getTripPaymentCharges")
+    public ResponseEntity<Trip> getTripPaymentCharges(@RequestBody Trip trip)throws ResourceNotFoundException {
+        return setupsService.getTransportCharges(trip);
+    }
+    ///////////////////////////////////////////////////////////
+    @GetMapping("/withdrawals")
+    public List<Withdrawal> getAllWithdrawals(){
+        return setupsService.getAllWithdrawals();
+    }
+    @GetMapping("/withdrawals/{id}")
+    public ResponseEntity<Withdrawal> getWithdrawalById(@PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+        Withdrawal withdrawal =setupsService.getWithdrawalById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("withdrawal record not found for this id :: " + id));
+        return ResponseEntity.ok().body(withdrawal);
+    }
+    @PostMapping("/generatewithdrawalentry")
+    public Withdrawal createWithdrawal(@Valid @RequestBody WithdrawalRequest withdrawal) {
+        return setupsService.createWithdrawal(withdrawal);
+    }
+    @DeleteMapping("/withdrawals/{id}")
+    public Map<String, Boolean> deleteWithdrawal(@PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+        Withdrawal withdrawal = setupsService.getWithdrawalById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("withdrawal not found for this id :: " + id));
+
+        setupsService.deleteWithdrawal(id);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return response;
+    }
+    @GetMapping("/driverwithdrawals/{driverid}")
+    public ResponseEntity<Withdrawal> getWithdrawalByDriverId(@PathVariable(value = "driverid") Long driverid)
+            throws ResourceNotFoundException {
+        Withdrawal withdrawal =setupsService.getWithdrawalByDriverId(driverid)
+                .orElseThrow(() -> new ResourceNotFoundException("withdrawal records not found for this driver id :: " + driverid));
+        return ResponseEntity.ok().body(withdrawal);
+    }
+    //////////////////////////
+    @GetMapping("/driverbalance/{driverid}")
+    public int getDriverBalanceById(@PathVariable(value = "driverid") Long driverid)
+            {
+        return setupsService.getDriverBalanceById(driverid);
+    }
 }
